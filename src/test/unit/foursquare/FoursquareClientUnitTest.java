@@ -1,6 +1,5 @@
 package foursquare;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +19,6 @@ import javax.ws.rs.core.Response;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -52,19 +50,19 @@ public class FoursquareClientUnitTest {
         PowerMockito.when(ClientBuilder.newClient()).thenReturn(this.client);
         when(ClientBuilder.newClient()).thenReturn(client);
         when(client.target(anyString())).thenReturn(target);
+        when(target.queryParam(anyString(),anyString())).thenReturn(target);
         when(target.request(MediaType.APPLICATION_JSON)).thenReturn(invocationBuilder);
         when(invocationBuilder.get()).thenReturn(response);
         when(response.getStatusInfo()).thenReturn(statusType);
         when(statusType.getFamily()).thenReturn(Response.Status.Family.SUCCESSFUL);
     }
 
-
     @Test
     public void whenNameisValidThenRetriveVenues() throws Exception {
         String jsonResponse = "{\"meta\":{\"code\":\"200\"}}";
         when(response.readEntity(String.class)).thenReturn(jsonResponse);
 
-        String venues = foursquareClient.getVenue("London");
+        String venues = foursquareClient.getPlace("London");
 
         assertThat(venues, is(equalTo(jsonResponse)));
     }
@@ -73,14 +71,14 @@ public class FoursquareClientUnitTest {
     public void whenServerErrorOccursThenThrowException() throws Exception {
         when(statusType.getFamily()).thenReturn(Response.Status.Family.SERVER_ERROR);
 
-        foursquareClient.getVenue("London");
+        foursquareClient.getPlace("London");
     }
 
     @Test(expected = Exception.class)
     public void whenClientErrorOccursThenThrowException() throws Exception {
         when(statusType.getFamily()).thenReturn(Response.Status.Family.CLIENT_ERROR);
 
-        foursquareClient.getVenue("London");
+        foursquareClient.getPlace("London");
     }
 
     //TODO: fail to parse exceptions

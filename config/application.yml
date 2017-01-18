@@ -1,0 +1,8 @@
+server:
+  type: default
+  rootPath: /
+  minThreads: 8
+  maxThreads: 512
+  adminMinThreads: 1
+  adminMaxThreads: 64
+  maxQueuedRequests: 512

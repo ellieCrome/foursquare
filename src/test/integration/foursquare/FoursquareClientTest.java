@@ -3,12 +3,7 @@ package foursquare;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.omg.PortableServer.IdAssignmentPolicyValue.USER_ID;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Created by ecrome on 16/01/2017.
@@ -25,9 +20,25 @@ public class FoursquareClientTest {
     @Test
     public void whenValidNameIsSuppliedThenReturnSuccess() throws Exception {
         String name = "Brooklyn";
-        String result = foursquareClient.getVenue(name);
+        String result = foursquareClient.getPlace(name);
 
-        assertThat(result, is(equalTo("200")));
+        assertTrue(result.contains("\"code\":200"));
+    }
+
+    @Test (expected = Exception.class)
+    public void whenEmptyNameIsSuppliedThenReturnBadRequest() throws Exception {
+        String name = "";
+        String result = foursquareClient.getPlace(name);
+
+        assertTrue(result.contains("\"code\":400"));
+    }
+
+    @Test (expected = Exception.class)
+    public void whenNoNameIsSuppliedThenReturnBadRequest() throws Exception {
+        String name = null;
+        String result = foursquareClient.getPlace(name);
+
+        assertTrue(result.contains("\"code\":400"));
     }
 
 }

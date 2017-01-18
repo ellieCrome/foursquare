@@ -1,10 +1,13 @@
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'application'
 
 sourceCompatibility = 1.5
 
 project.ext {
+    mainClass = "foursquare.FoursquareApplication"
+    configYml = "$rootProject.projectDir/config/application.yml"
     dropwizardVersion = '0.9.2'
     junitVersion = '4.11'
     mockitoVersion = '1.10.19'
@@ -13,6 +16,15 @@ project.ext {
 
 repositories {
     mavenCentral()
+}
+
+// JAR/FatJAR configuration
+mainClassName = "${mainClass}"
+
+// Application plugin configuration
+run {
+    args 'server', configYml
+    systemProperties = System.getProperties()
 }
 
 dependencies {
